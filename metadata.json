@@ -1,0 +1,8 @@
+{"shell-version": ["3.4"],
+ "uuid": "banshee-gnome-shell-doubanFM-indicator@mengzhuo.org",
+ "name": "Douban FM",
+ "url":  "https://github.com/mengzhuo/gnome-shell-doubanFM",
+ "description": "An DoubanFM indicator using Banshee as backend for gnome shell",
+ "settings-schema": "org.gnome.shell.extensions.banshee-doubanfm",
+ "gettext-domain" : "banshee-doubanfm"
+ }

@@ -1,0 +1,34 @@
+ .doubanFM-label{
+    padding-left:0.5em;
+ }
+ .loveit{
+    color:#ff0000; /* the color of gnome-shell will override the color in svg , here is an workaround*/
+ }
+ .not-running{
+    color:#fce94f;
+ }
+.intro-img{
+    background-image: url(intro/help.svg);
+    background-size: contain;
+    width:140px;
+	height:174px;
+}
+.doubanfm-vbox .title{
+    padding-bottom:1em;
+}
+.hbox-item{
+    padding:0.25em 1em;
+    font-size:1em;
+    font-weight:800;
+}
+.hbox-item .click {
+    min-width:5em;
+    color:#ddd;
+}
+.hbox-item .description {
+    padding-left:0.5em;
+    border-left:1px solid #eee;
+}
+.even,.hbox-item:nth-child(even){
+    background-color:#333;
+}

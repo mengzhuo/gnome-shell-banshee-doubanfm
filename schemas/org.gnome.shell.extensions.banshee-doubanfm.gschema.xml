@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-banshee-doubanfm">
+  <enum id="position" >
+    <value value="0" nick="Left"/>
+    <value value="1" nick="center"/>
+    <value value="2" nick="right"/>
+  </enum>
+  <schema path="/org/gnome/shell/extensions/banshee-doubanfm/" id="org.gnome.shell.extensions.banshee-doubanfm">
+    <key type="i" name="char-limit">
+      <default>5</default>
+      <range min="1" max="20"/>
+      <summary>CJK Characters Limit</summary>
+      <description>CJK characters limit, while English character limit will be its 2 times</description>
+    </key>
+    <key enum="position" name="doubanfm-position">
+        <default>"center"</default>
+        <summary></summary>
+        <description></description>
+    </key>
+    <key type="b" name="show-text">
+      <default>true</default>
+      <summary>Show Song Title while playing</summary>
+      <description>Show Song Title while playing.</description>
+    </key>
+    <key type="b" name="first-time">
+      <default>true</default>
+      <summary></summary>
+      <description>First time greeting.</description>
+    </key>
+  </schema>
+</schemalist>
