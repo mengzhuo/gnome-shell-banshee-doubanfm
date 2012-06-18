@@ -22,13 +22,22 @@
     font-weight:800;
 }
 .hbox-item .click {
-    min-width:5em;
+    min-width:10em;
     color:#ddd;
 }
 .hbox-item .description {
     padding-left:0.5em;
-    border-left:1px solid #eee;
+    border-left:1px solid #ccc;
 }
 .even,.hbox-item:nth-child(even){
     background-color:#333;
+}
+.position-list-item{
+    padding:0.3em 1em;
+    min-height: 30px;
+    min-width: 30px;
+}
+.position-list-item:hover{
+    background:url(icons/doubanFM-love-symbolic.svg);
+    background-position: 0 0.8em;
 }

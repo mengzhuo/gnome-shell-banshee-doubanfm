@@ -29,7 +29,7 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const DBusInterface = Extension.imports.dbus;
 const DBFMUtil = Extension.imports.util;
 
-const Gettext = imports.gettext.domain('banshee-doubanfm');
+const Gettext = imports.gettext.domain('banshee-doubanfm-gse');
 const _ = Gettext.gettext;
 
 const PANEL_HEIGHT = Main.panel.actor.get_size()[1];
@@ -46,7 +46,7 @@ const POSITION = {
 
 // Char Limit Slider helper functions quick and dirty
 const CHAR_SLIDER_UPPER = 10;
-const CHAR_SLIDER_LOWER = 3;
+const CHAR_SLIDER_LOWER = 2;
 
 function _valueToCharLimits(value) {
     return Math.floor(value * (CHAR_SLIDER_UPPER - CHAR_SLIDER_LOWER) + CHAR_SLIDER_LOWER);
@@ -55,19 +55,6 @@ function _valueToCharLimits(value) {
 function _charLimitsToValue(charLimits) {
     return (charLimits - CHAR_SLIDER_LOWER) / (CHAR_SLIDER_UPPER - CHAR_SLIDER_LOWER);
 }
-/* position setting in next version
-const POSI_SLIDER_UPPER = 2;
-const POSI_SLIDER_LOWER = 0;
-
-function _valueToPositions(value) {
-    return Math.floor(value * (POSI_SLIDER_UPPER - POSI_SLIDER_LOWER) + POSI_SLIDER_LOWER);
-}
-
-function _positionsToValue(position) {
-    return (position - POSI_SLIDER_LOWER) / (POSI_SLIDER_UPPER - POSI_SLIDER_LOWER);
-}
-*/
-// quick and dirty done
 
 const DoubanFMIndicator = new Lang.Class({
     
@@ -95,11 +82,11 @@ const DoubanFMIndicator = new Lang.Class({
         
         //UI START
         
-        textLength = this._showText?Math.max(PANEL_HEIGHT*4,16*(this._charLimit+1)):0; //Fix length for good UE
+        prefWidth = this._showText?PANEL_HEIGHT*this._charLimit:0; //Fix length for good UE
+        this.actor.set_width(prefWidth+PANEL_HEIGHT); // include the icon
         
         this._box = new St.BoxLayout({ vertical: false,
-                                        style_class: "doubanFM",
-                                        width: 26+textLength
+                                        style_class: "doubanFM"
                                      });
         this.actor.add_actor(this._box);
         
@@ -135,7 +122,7 @@ const DoubanFMIndicator = new Lang.Class({
     _introduction  : function (){
     
         //introduction title 
-        let item = new PopupMenu.PopupMenuItem(_('How to use Douban FM'), { reactive: false });
+        let item = new PopupMenu.PopupMenuItem(_("How to use Douban FM"), { reactive: false });
         this.menu.addMenuItem(item);
         
         this.menu.actor.add_style_class_name("doubanfm-popup");
@@ -143,13 +130,13 @@ const DoubanFMIndicator = new Lang.Class({
         vbox = new St.BoxLayout({vertical:true,
                                  style_class: 'doubanfm-vbox'});
         
-        item = new St.Label({ text:_("Three ways to control by click\nthe label above after you've\ndone the setting"),
+        item = new St.Label({ text:_("Three ways to control by click\nthe label above after you've\ndone the preference setting"),
                                style_class: 'title'});
         vbox.add_actor(item);
         
-        textList = [ [_( "Left"),_("Next Song")],
-                     [_( "Middle"),_("Dislike")],
-                     [_( "Right"),_("Love Toggle")]
+        textList = [ [_( "Left Click"),_("Next Song")],
+                     [_( "Middle Click"),_("Dislike")],
+                     [_( "Right Click"),_("Love Toggle")]
                    ];
         
         for (var i  in textList){
@@ -175,10 +162,6 @@ const DoubanFMIndicator = new Lang.Class({
         item = new PopupMenu.PopupSeparatorMenuItem();
         this.menu.addMenuItem(item);
         
-        //setting title 
-        let item = new PopupMenu.PopupMenuItem(_('Douban FM Setting'), { reactive: false });
-        this.menu.addMenuItem(item);
-        
         this._showTextSwitch = new PopupMenu.PopupSwitchMenuItem(_("Show Song Title"),this._showText);
         this._showTextSwitch.connect('toggled', Lang.bind(this, function(item) {
             this._settings.set_boolean('show-text', item.state);
@@ -186,11 +169,11 @@ const DoubanFMIndicator = new Lang.Class({
         this.menu.addMenuItem(this._showTextSwitch);
         
         //char limit
-        this._charLimitTitle = new PopupMenu.PopupMenuItem(_("CJK Character Limit"), { reactive: false });
-        this._charLimitLabel = new St.Label({ text: this._charLimit+_(' letters') });
+        this._charLimitTitle = new PopupMenu.PopupMenuItem(_("Character Number Limit"), { reactive: false });
+        this._charLimitLabel = new St.Label({ text: this._charLimit+_(" CJK/ ")+this._charLimit*2+_(" Latins") });
         this._charLimitSlider = new PopupMenu.PopupSliderMenuItem(_charLimitsToValue(this._charLimit));
         this._charLimitSlider.connect('value-changed', Lang.bind(this, function(item) {
-            this._charLimitLabel.set_text(_valueToCharLimits(item.value)+_(' letters'));
+            this._charLimitLabel.set_text(_valueToCharLimits(item.value)+_(" CJK/ ")+ _valueToCharLimits(item.value)*2+' Latins');
         }));
         
         this._charLimitSlider.connect('drag-end', Lang.bind(this, this._onCharLimitChanged));
@@ -200,35 +183,53 @@ const DoubanFMIndicator = new Lang.Class({
         this.menu.addMenuItem(this._charLimitSlider);
         
         
-        //position in next version
-        /*
-        this._positionTitle = new PopupMenu.PopupMenuItem(_("Position Setting"), { reactive: false });
-        this._positionLabel = new St.Label({ text: this._position });
-        this._positionSlider = new PopupMenu.PopupSliderMenuItem( _positionsToValue(this._position,id) );
-        this._positionSlider.connect('value-changed', Lang.bind(this, function(item) {
-            this._positionLabel.set_text(_valueToPositions(item.value)+_(' letters'));
-        }));
+        //position
+        this._positionTitle = new PopupMenu.PopupMenuItem(_("Position in the Panel"), { reactive: false });
+        this._restartHint = new St.Label({text: _("Need to restart Extension") });
+        this._positionTitle.addActor(this._restartHint,{align:St.Align.END});
+        this._restartHint.hide();
         
-        this._positionSlider.connect('drag-end', Lang.bind(this, this._onPositionChanged));
-        this._positionSlider.actor.connect('scroll-event', Lang.bind(this, this._onPositionChanged));
-        this._positionTitle.addActor(this._positionLabel, { align: St.Align.END });
-        this.menu.addMenuItem(this._positionTitle);
-        this.menu.addMenuItem(this._positionSlider);
-        */
+        this._positionContainer = new PopupMenu.PopupBaseMenuItem({ reactive: true });
+        Hbox = new St.BoxLayout({vertical:false,name:'position-list'})
+        _positionList = [ _("Left"), _("Center"), _("Right")];
+        
+        for (var i = 0 ; i<3 ; i++){
+            button = new St.Button({label:_positionList[i],style_class:'position-list-item'});
+            button.position = i;
+            if ( i == this._position){
+                this._currentPositionButton = button;
+                this._currentPositionButton.label = '[ '+button.label+' ]';
+                this._currentPositionButton.reactive = false;
+            }
+            button.connect('button-press-event', Lang.bind(this, this._onPositionChanged));
+            Hbox.add_actor(button,{x_fill: false});
+        }
+        this._positionContainer.addActor(Hbox,{ align: St.Align.MIDDLE });//Weird, this align won't work 
+        this.menu.addMenuItem( this._positionTitle );
+        this.menu.addMenuItem( this._positionContainer );
         
         
-        //Setting 
-        this._nextTimeSwitch = new PopupMenu.PopupMenuItem(_("I've done setting"),{reactive:true});
+        item = new PopupMenu.PopupSeparatorMenuItem();
+        this.menu.addMenuItem(item);
+        
+        //Done setting
+        this._nextTimeSwitch = new PopupMenu.PopupMenuItem(_("I've done preference setting"),{reactive:true});
         this._nextTimeSwitch.connect('activate', Lang.bind(this, this._onToggled));
         this.menu.addMenuItem(this._nextTimeSwitch);
         
     },
+    _onPositionChanged : function (button){
+            this._restartHint.show();
+            this._currentPositionButton.label = this._currentPositionButton.label.replace(/\[\s(.*)\s\]/,'$1');
+            this._currentPositionButton.reactive = true;
+            
+            button.label = '[ '+button.label+' ]';
+            button.reactive = false;
+            this._currentPositionButton = button;
+            this._settings.set_enum('doubanfm-position',button.position);
+    },
     _onCharLimitChanged : function (){
         this._settings.set_int('char-limit', _valueToCharLimits(this._charLimitSlider.value));
-    },
-    __onPositionChanged : function (){
-        //this._settings.set_enum('doubanfm-position',this._combo);
-        return false;
     },
     addToPanel : function (){
         switch (this._position){
@@ -249,10 +250,23 @@ const DoubanFMIndicator = new Lang.Class({
         if (this._firstTime)
             this._introduction();
     },
-    _onToggled : function (item){
+    _onToggled : function (){
+        
         this._settings.set_boolean('first-time',false);
         this.menu.close();
         this.menu = null;
+        
+        /*if (this._comfirmSet){
+            this._settings.set_boolean('first-time',false);
+            this.menu.close();
+            this.menu = null;
+        }
+        else{
+            this._comfirmSet = true;
+            this._nextTimeSwitch.label.text = _("You can't access to this setting again, if sure then click me");
+            this.menu.open();
+        }
+        */
     },
     _onSettingsChanged : function (){
         
@@ -260,6 +274,11 @@ const DoubanFMIndicator = new Lang.Class({
         this._charLimit = this._settings.get_int('char-limit');
         this._firstTime = this._settings.get_boolean('first-time');
         this._position   = this._settings.get_enum('doubanfm-position');
+        
+                    
+        let prefWidth = this._showText?Math.round(Math.max(PANEL_HEIGHT*2.5,(PANEL_HEIGHT*0.8)*this._charLimit)):0;
+        //Fix length for good UE
+        this.actor.set_width(prefWidth+Math.round(PANEL_HEIGHT*1.5)); // include the icon and its padding
         
         this._onStateChanged(); // to change UI
     },
@@ -297,18 +316,20 @@ const DoubanFMIndicator = new Lang.Class({
             }
             
             var charLimit =  DBFMUtil.hasCJK(this._title)?this._charLimit:this._charLimit*2;
-
+            
             if (this._title.length > charLimit){
                 this._label.text = this._title.substring(0,charLimit)+"...";
             }
         }
         else{
+
             this._icon.icon_name = ICON.NOT_RUNNING;
             this._icon.add_style_class_name('not-running');
             this._label.text = _('Not Running');
             
             if (!this._firstTime)
-                this.actor.hide(); // in case some of users don't know this extension is running
+               this.actor.hide();
+            //in case some of users don't know this extension is running
         }
     },
     _onButtonPress: function(actor, event) {
@@ -378,5 +399,5 @@ function disable() {
     }
 }
 function init(metadata) {
-    DBFMUtil.initTranslations();
+    DBFMUtil.initTranslations('banshee-doubanfm-gse');
 }

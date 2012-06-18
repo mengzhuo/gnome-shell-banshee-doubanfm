@@ -4,5 +4,5 @@
  "url":  "https://github.com/mengzhuo/gnome-shell-doubanFM",
  "description": "An DoubanFM indicator using Banshee as backend for gnome shell",
  "settings-schema": "org.gnome.shell.extensions.banshee-doubanfm",
- "gettext-domain" : "banshee-doubanfm"
+ "gettext-domain" : "banshee-doubanfm-gse"
  }
