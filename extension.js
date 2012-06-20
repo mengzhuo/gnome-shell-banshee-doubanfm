@@ -80,6 +80,8 @@ const DoubanFMIndicator = new Lang.Class({
         this._player = new DBusInterface.DoubanFMServer();
         this._player.connect('state-changed',Lang.bind(this,this._onStateChanged));
         
+
+        
         //UI START
         
         prefWidth = this._showText?PANEL_HEIGHT*this._charLimit:0; //Fix length for good UE
@@ -198,7 +200,7 @@ const DoubanFMIndicator = new Lang.Class({
             button.position = i;
             if ( i == this._position){
                 this._currentPositionButton = button;
-                this._currentPositionButton.label = '[ '+button.label+' ]';
+                this._currentPositionButton.label = _("[ %s ]").format(button.label);
                 this._currentPositionButton.reactive = false;
             }
             button.connect('button-press-event', Lang.bind(this, this._onPositionChanged));
@@ -218,15 +220,15 @@ const DoubanFMIndicator = new Lang.Class({
         this.menu.addMenuItem(this._nextTimeSwitch);
         
     },
-    _onPositionChanged : function (button){
+    _onPositionChanged : function (newButton){
             this._restartHint.show();
-            this._currentPositionButton.label = this._currentPositionButton.label.replace(/\[\s(.*)\s\]/,'$1');
+            this._currentPositionButton.label.replace(/\[\s(.*)\s\]/,'$1');
             this._currentPositionButton.reactive = true;
             
-            button.label = '[ '+button.label+' ]';
-            button.reactive = false;
-            this._currentPositionButton = button;
-            this._settings.set_enum('doubanfm-position',button.position);
+            newButton.label = _("[ %s ]").format(newButton.label)
+            newButton.reactive = false;
+            this._currentPositionButton = newButton;
+            this._settings.set_enum('doubanfm-position',newButton.position);
     },
     _onCharLimitChanged : function (){
         this._settings.set_int('char-limit', _valueToCharLimits(this._charLimitSlider.value));
@@ -282,9 +284,13 @@ const DoubanFMIndicator = new Lang.Class({
         
         this._onStateChanged(); // to change UI
     },
+    _onGetSongInfoCompleted : function (results){
+        [this._title,this._album,this._performer,this._Loveit] = results[0];
+    },
     _onStateChanged : function ()
-    {        
-        [this._title,this._album,this._performer,this._Loveit] = this._player.get_song_info();
+    {
+       this._player._doubanFMServer.GetPlayingSongRemote(Lang.bind(this,this._onGetSongInfoCompleted));
+       //
         
         if (this._player.playbackStatus != null && this._title != null){
                         

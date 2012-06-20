@@ -122,17 +122,16 @@ const DoubanFMServer = new Lang.Class({
             
             this._doubanFMServer.init(null);
             
-            this.playbackStatus = this._media2Server.CurrentState;  
+            this.playbackStatus = this._media2Server.CurrentState;
             
-            if (this.get_song_info()[0] != null || this.playbackStatus != null)
-                this.playbackStatus = 'playing'; //FIXME Banshee has no working DBUS property! here is a dirty workaround
+                
+            if ( this.playbackStatus == null )
+                this.playbackStatus = 'idle'; //FIXME Banshee has no working DBUS property by using Dbus Proxy! here is a dirty workaround
             
             //connect to signal
             this._media2Server.connectSignal('StateChanged', Lang.bind(this, function(proxy, senderName, [status]){
-
                 this.playbackStatus = status;
                 this.emit('state-changed');
-            
             } ));
             
             this.connect('destroy', Lang.bind(this, this._onDestroy));
@@ -155,20 +154,6 @@ const DoubanFMServer = new Lang.Class({
             this._doubanFMServer.CancelLoveRemote();
             this.emit('state-changed');
         },
-        
-        get_song_info : function (){
-            try {
-                var info = this._doubanFMServer.GetPlayingSongSync()[0]
-                if (info != null)
-                    return info;
-                // it doesn't return data if using Remote style
-            }catch(e){
-                global.log('banshee not runing');
-            }
-            return [null,null,null,null];
-            
-        },
-        
         play_pause : function (){
         
             this._media2Server.TogglePlayingRemote();
