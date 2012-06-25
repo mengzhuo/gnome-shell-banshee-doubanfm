@@ -74,7 +74,7 @@ const DoubanFMIndicator = new Lang.Class({
         
         // Load setting
         this._settings = DBFMUtil.getSettings();
-        this._settings.connect('changed', Lang.bind(this, this._onSettingsChanged));
+        this._settingSiganlID = this._settings.connect('changed', Lang.bind(this, this._onSettingsChanged));
         
         //connect to dbus
         this._player = new DBusInterface.DoubanFMServer();
@@ -116,7 +116,6 @@ const DoubanFMIndicator = new Lang.Class({
         //UI END
         
         this.connect('destroy', Lang.bind(this, this._onDestroy));
-        this.actor.connect('button-press-event', Lang.bind(this, this._onButtonPress));
         
         this._onSettingsChanged();
     },
@@ -257,18 +256,6 @@ const DoubanFMIndicator = new Lang.Class({
         this._settings.set_boolean('first-time',false);
         this.menu.close();
         this.menu = null;
-        
-        /*if (this._comfirmSet){
-            this._settings.set_boolean('first-time',false);
-            this.menu.close();
-            this.menu = null;
-        }
-        else{
-            this._comfirmSet = true;
-            this._nextTimeSwitch.label.text = _("You can't access to this setting again, if sure then click me");
-            this.menu.open();
-        }
-        */
     },
     _onSettingsChanged : function (){
         
@@ -384,6 +371,8 @@ const DoubanFMIndicator = new Lang.Class({
             default:
                 global.logError('DoubanFM position error');
         }
+        
+        this._settings.disconnect( this._settingSiganlID );
         
     }
     

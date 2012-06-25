@@ -154,6 +154,7 @@ const DoubanFMServer = new Lang.Class({
             this._doubanFMServer.CancelLoveRemote();
             this.emit('state-changed');
         },
+        
         play_pause : function (){
         
             this._media2Server.TogglePlayingRemote();
@@ -166,9 +167,9 @@ const DoubanFMServer = new Lang.Class({
         
         _onDestroy : function ()
         {
-            this._media2Server = null;
-            this._doubanFMServer = null;
-            this._controller = null;
+            delete this._media2Server;
+            delete this._doubanFMServer;
+            delete this._controller;
         }
 });
 Signals.addSignalMethods(DoubanFMServer.prototype);
