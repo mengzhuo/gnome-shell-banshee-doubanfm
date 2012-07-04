@@ -273,13 +273,15 @@ const DoubanFMIndicator = new Lang.Class({
     },
     _onGetSongInfoCompleted : function (results){
         [this._title,this._album,this._performer,this._Loveit] = results[0];
-    },
-    _onStateChanged : function ()
-    {
-       this._player._doubanFMServer.GetPlayingSongRemote(Lang.bind(this,this._onGetSongInfoCompleted));
-       //
         
-        if (this._player.playbackStatus != null && this._title != null){
+        if (this._player.loveToggled){ // workaround for Love toggled but no signal come out
+            this._Loveit = this._player.loveStatus; 
+            this._player.loveToggled = false;
+        }
+        this._updateLabel();
+    },
+    _updateLabel : function (){
+         if (this._player.playbackStatus != null && this._title != null){
                         
             this.actor.show();
             this._icon.icon_name = ICON.NONE;
@@ -324,6 +326,10 @@ const DoubanFMIndicator = new Lang.Class({
                this.actor.hide();
             //in case some of users don't know this extension is running
         }
+    },
+    _onStateChanged : function ()
+    {
+       this._player._doubanFMServer.GetPlayingSongRemote(Lang.bind(this,this._onGetSongInfoCompleted));
     },
     _onButtonPress: function(actor, event) {
         

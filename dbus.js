@@ -140,6 +140,10 @@ const DoubanFMServer = new Lang.Class({
         love : function(){
         
             this._doubanFMServer.LoveRemote();
+            
+            this.loveToggled = true;
+            this.loveStatus = true;
+            
             this.emit('state-changed');
         },
         
@@ -152,6 +156,10 @@ const DoubanFMServer = new Lang.Class({
         cancel_love : function(){
         
             this._doubanFMServer.CancelLoveRemote();
+            
+            this.loveToggled = true;
+            this.loveStatus = false;
+            
             this.emit('state-changed');
         },
         
