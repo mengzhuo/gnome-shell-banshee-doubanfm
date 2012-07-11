@@ -118,6 +118,7 @@ const DoubanFMIndicator = new Lang.Class({
         this.connect('destroy', Lang.bind(this, this._onDestroy));
         
         this._onSettingsChanged();
+        this._updateLabel();
     },
     
     _introduction  : function (){
