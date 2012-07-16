@@ -22,6 +22,87 @@ const BUS_NAME = 'fm.douban.banshee';
 const MS_BUS_PATH = '/org/bansheeproject/Banshee/PlayerEngine';
 const CR_BUS_PATH = '/org/bansheeproject/Banshee/PlaybackController';
 const DB_BUS_PATH = '/fm/douban/banshee';
+const DBUS_CONTROLLER_PATH = '/org/freedesktop/DBus';
+const DBUS_CONTROLLER_NAME = 'org.freedesktop.DBus';
+
+const DBUS_CONTROLLER_INTERFACE = <interface name="org.freedesktop.DBus">
+    <method name="Hello">
+      <arg direction="out" type="s"/>
+    </method>
+    <method name="RequestName">
+      <arg direction="in" type="s"/>
+      <arg direction="in" type="u"/>
+      <arg direction="out" type="u"/>
+    </method>
+    <method name="ReleaseName">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="u"/>
+    </method>
+    <method name="StartServiceByName">
+      <arg direction="in" type="s"/>
+      <arg direction="in" type="u"/>
+      <arg direction="out" type="u"/>
+    </method>
+    <method name="UpdateActivationEnvironment">
+      <arg direction="in" type="a{ss}"/>
+    </method>
+    <method name="NameHasOwner">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="b"/>
+    </method>
+    <method name="ListNames">
+      <arg direction="out" type="as"/>
+    </method>
+    <method name="ListActivatableNames">
+      <arg direction="out" type="as"/>
+    </method>
+    <method name="AddMatch">
+      <arg direction="in" type="s"/>
+    </method>
+    <method name="RemoveMatch">
+      <arg direction="in" type="s"/>
+    </method>
+    <method name="GetNameOwner">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="s"/>
+    </method>
+    <method name="ListQueuedOwners">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="as"/>
+    </method>
+    <method name="GetConnectionUnixUser">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="u"/>
+    </method>
+    <method name="GetConnectionUnixProcessID">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="u"/>
+    </method>
+    <method name="GetAdtAuditSessionData">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="ay"/>
+    </method>
+    <method name="GetConnectionSELinuxSecurityContext">
+      <arg direction="in" type="s"/>
+      <arg direction="out" type="ay"/>
+    </method>
+    <method name="ReloadConfig">
+    </method>
+    <method name="GetId">
+      <arg direction="out" type="s"/>
+    </method>
+    <signal name="NameOwnerChanged">
+      <arg type="s"/>
+      <arg type="s"/>
+      <arg type="s"/>
+    </signal>
+    <signal name="NameLost">
+      <arg type="s"/>
+    </signal>
+    <signal name="NameAcquired">
+      <arg type="s"/>
+    </signal>
+  </interface>;
 
 const MEDIA_SERVER2_PLAYER_IFACE = <interface name="org.bansheeproject.Banshee.PlayerEngine">
     <method name="Open">
@@ -97,6 +178,8 @@ const DoubanFMServer = new Lang.Class({
             var controllerInfo    = Gio.DBusInterfaceInfo.new_for_xml( BANSHEE_CONTROLLER );
             var doubanFMInfo      = Gio.DBusInterfaceInfo.new_for_xml( DBFM_INFO_IFACE );
             
+            var dbusController = Gio.DBusInterfaceInfo.new_for_xml(DBUS_CONTROLLER_INTERFACE);
+            
             this._media2Server = new Gio.DBusProxy({ g_connection: Gio.DBus.session,
 			                                                   g_interface_name: media2ServerInfo.name,
 			                                                   g_interface_info: media2ServerInfo,
@@ -122,6 +205,15 @@ const DoubanFMServer = new Lang.Class({
             
             this._doubanFMServer.init(null);
             
+            this._dbusController = new Gio.DBusProxy({ g_connection: Gio.DBus.session,
+			                                                   g_interface_name: dbusController.name,
+			                                                   g_interface_info: dbusController,
+			                                                   g_name: DBUS_CONTROLLER_NAME,
+			                                                   g_object_path: DBUS_CONTROLLER_PATH,
+                                                               g_flags: (Gio.DBusProxyFlags.DO_NOT_AUTO_START) });
+                                                               
+            this._dbusController.init(null);                                                 
+            
             this.playbackStatus = this._media2Server.CurrentState;
             
                 
@@ -133,6 +225,14 @@ const DoubanFMServer = new Lang.Class({
                 this.playbackStatus = status;
                 this.emit('state-changed');
             } ));
+            
+            this._dbusController.connectSignal('NameOwnerChanged', Lang.bind(this, function(proxy,senderName,[id,from,to]){
+                //XXX can we just gain the signal from banshee?
+                if (id == BUS_NAME && from != "" && to == ""){
+                    this.emit('closed');
+                }
+                
+            }));
             
             this.connect('destroy', Lang.bind(this, this._onDestroy));
             
