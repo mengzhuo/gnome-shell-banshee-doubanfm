@@ -381,7 +381,6 @@ const DoubanFMIndicator = new Lang.Class({
         }
         
         this._settings.disconnect( this._settingSiganlID );
-        this._shellwm.disconnect( this._bansheeDestroyId );
     }
     
 });
