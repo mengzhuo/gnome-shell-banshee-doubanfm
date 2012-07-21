@@ -69,7 +69,7 @@ const DoubanFMSettingsWidget = new GObject.Class({
         this._positionComboBox.connect('changed', Lang.bind(this, this._setPosition));
         
         this.attach(new Gtk.Label({ label: "*", wrap: true, xalign: 0.0 }), 0, 3, 1, 1);
-        this.attach(new Gtk.Label({ label: _('Display Help'), wrap: true, xalign: 0.0 }), 1, 3, 1, 1);
+        this.attach(new Gtk.Label({ label: _("Display Help"), wrap: true, xalign: 0.0 }), 1, 3, 1, 1);
         this._firstTimeSwitch = new Gtk.Switch({active: this._firstTime});
         this.attach(this._firstTimeSwitch,2,3,1,1);
         this._showTextSwitch.connect('notify::active', Lang.bind(this, this._setFirstTime));
@@ -77,7 +77,7 @@ const DoubanFMSettingsWidget = new GObject.Class({
         let horzSeparator = new Gtk.HSeparator();
         this.attach(horzSeparator, 0, 4, 6, 1);
         
-        this.attach(new Gtk.Label({ label: '* : '+_("Need to restart Extension"), wrap: true, xalign: 0.0 }), 1, 5, 1, 1);
+        this.attach(new Gtk.Label({ label: '* : ' + _("Need to restart Extension"), wrap: true, xalign: 0.0 }), 1, 5, 1, 1);
 
     },
     _setShowText: function (object){
