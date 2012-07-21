@@ -2,7 +2,7 @@
 // Copyright (C) 2012 Meng Zhuo <mengzhuo1203@gmail.com>
 // 
 // The Banshee Douban FM plugin require version >= 0.3
-// Version 0.3.3
+// Version 0.3.4
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -79,8 +79,7 @@ const DoubanFMIndicator = new Lang.Class({
         //connect to dbus
         this._player = new DBusInterface.DoubanFMServer();
         this._player.connect('state-changed',Lang.bind(this,this._onStateChanged));
-        
-
+        this._player.connect('closed',Lang.bind(this,this._onDBFMDestroy));
         
         //UI START
         
@@ -118,8 +117,11 @@ const DoubanFMIndicator = new Lang.Class({
         this.connect('destroy', Lang.bind(this, this._onDestroy));
         
         this._onSettingsChanged();
+        this._updateLabel();
     },
-    
+    _onDBFMDestroy : function (){
+        this.actor.hide();
+    },
     _introduction  : function (){
     
         //introduction title 
@@ -273,18 +275,20 @@ const DoubanFMIndicator = new Lang.Class({
     },
     _onGetSongInfoCompleted : function (results){
         [this._title,this._album,this._performer,this._Loveit] = results[0];
-    },
-    _onStateChanged : function ()
-    {
-       this._player._doubanFMServer.GetPlayingSongRemote(Lang.bind(this,this._onGetSongInfoCompleted));
-       //
         
-        if (this._player.playbackStatus != null && this._title != null){
+        if (this._player.loveToggled){ // workaround for Love toggled but no signal come out
+            this._Loveit = this._player.loveStatus; 
+            this._player.loveToggled = false;
+        }
+        this._updateLabel();
+    },
+    _updateLabel : function (){
+         if (this._player.playbackStatus != null && this._title != null){
                         
             this.actor.show();
             this._icon.icon_name = ICON.NONE;
             this._label.hide();
-            this._icon.remove_style_class_name('loveit');   
+            this._icon.remove_style_class_name('loveit');
             this._icon.remove_style_class_name('not-running');
             
             if (this._showText){
@@ -324,6 +328,10 @@ const DoubanFMIndicator = new Lang.Class({
                this.actor.hide();
             //in case some of users don't know this extension is running
         }
+    },
+    _onStateChanged : function ()
+    {
+       this._player._doubanFMServer.GetPlayingSongRemote(Lang.bind(this,this._onGetSongInfoCompleted));
     },
     _onButtonPress: function(actor, event) {
         
@@ -373,7 +381,6 @@ const DoubanFMIndicator = new Lang.Class({
         }
         
         this._settings.disconnect( this._settingSiganlID );
-        
     }
     
 });

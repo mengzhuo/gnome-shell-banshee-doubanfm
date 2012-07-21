@@ -83,11 +83,6 @@ function getSettings(schema) {
 
     return new Gio.Settings({ settings_schema: schemaObj });
 }
-function greeting(indicator) {
-    indicator.popup
-
-
-}
 function hasCJK (string){
     if (typeof ( string ) != 'string' ){
         throw new Error (string+'is not string');
