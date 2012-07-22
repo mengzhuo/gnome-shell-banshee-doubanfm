@@ -83,7 +83,7 @@ const DoubanFMIndicator = new Lang.Class({
         
         //UI START
         
-        prefWidth = this._showText?PANEL_HEIGHT*this._charLimit:0; //Fix length for good UE
+        let prefWidth = this._showText?PANEL_HEIGHT*this._charLimit:0; //Fix length for good UE
         this.actor.set_width(prefWidth+PANEL_HEIGHT); // include the icon
         
         this._box = new St.BoxLayout({ vertical: false,
@@ -274,6 +274,9 @@ const DoubanFMIndicator = new Lang.Class({
         this._onStateChanged(); // to change UI
     },
     _onGetSongInfoCompleted : function (results){
+        if (results  == null)
+            return;
+            
         [this._title,this._album,this._performer,this._Loveit] = results[0];
         
         if (this._player.loveToggled){ // workaround for Love toggled but no signal come out
