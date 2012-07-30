@@ -28,6 +28,7 @@ const Gtk = imports.gi.Gtk;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const DBusInterface = Extension.imports.dbus;
 const DBFMUtil = Extension.imports.util;
+const ADBlocker = Extension.imports.adblocker;
 
 const Gettext = imports.gettext.domain('banshee-doubanfm-gse');
 const _ = Gettext.gettext;
@@ -80,6 +81,9 @@ const DoubanFMIndicator = new Lang.Class({
         this._player = new DBusInterface.DoubanFMServer();
         this._player.connect('state-changed',Lang.bind(this,this._onStateChanged));
         this._player.connect('closed',Lang.bind(this,this._onDBFMDestroy));
+        
+        //connect to adblocker
+        this._adblocker = new ADBlocker.AdBlocker();
         
         //UI START
         
@@ -276,8 +280,13 @@ const DoubanFMIndicator = new Lang.Class({
     _onGetSongInfoCompleted : function (results){
         if (results  == null)
             return;
-            
+        
         [this._title,this._album,this._performer,this._Loveit] = results[0];
+        
+        if ( this._adblocker.list != undefined && this._adblocker.list.indexOf(this._title) != -1 ){
+            this._player.next();
+            return true;
+        }
         
         if (this._player.loveToggled){ // workaround for Love toggled but no signal come out
             this._Loveit = this._player.loveStatus; 

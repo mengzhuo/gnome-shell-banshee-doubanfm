@@ -7,6 +7,7 @@ const Lang = imports.lang;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const DBFMUtil = Extension.imports.util;
 
+
 const Gettext = imports.gettext.domain('banshee-doubanfm-gse');
 const _ = Gettext.gettext;
 
@@ -28,6 +29,7 @@ const DoubanFMSettingsWidget = new GObject.Class({
         this._position  = this._settings.get_enum('doubanfm-position');
         this._firstTime = this._settings.get_boolean('first-time');
         
+        this.attach(new Gtk.Label({ label: "", wrap: true, xalign: 0.0 }), 0, 0, 1, 1);
         this.attach(new Gtk.Label({ label: _("Show Song Title"), wrap: true, xalign: 0.0 }), 1, 0, 1, 1);
         this._showTextSwitch = new Gtk.Switch({active: this._showText});
         this.attach(this._showTextSwitch,2,0,1,1);
@@ -75,10 +77,12 @@ const DoubanFMSettingsWidget = new GObject.Class({
         this._showTextSwitch.connect('notify::active', Lang.bind(this, this._setFirstTime));
         
         let horzSeparator = new Gtk.HSeparator();
-        this.attach(horzSeparator, 0, 4, 6, 1);
+        this.attach(horzSeparator, 0, 5, 3, 1);
         
-        this.attach(new Gtk.Label({ label: '* : ' + _("Need to restart Extension"), wrap: true, xalign: 0.0 }), 1, 5, 1, 1);
-
+        this.attach(new Gtk.Label({ label: '* : ' + _("Need to restart Extension"), wrap: true, xalign: 0.0 }), 1, 6, 1, 1);
+        this.donation = new Gtk.Button({ label:"Donate"});
+        this.attach (this.donation, 2,6,1,1);
+        this.donation.connect('clicked',Lang.bind(this,this._makeDonation));
     },
     _setShowText: function (object){
         this._charLimitSpinButton.editable = this._showText = object.active;
@@ -99,6 +103,10 @@ const DoubanFMSettingsWidget = new GObject.Class({
         let position = this.list.get_value(iter, 0);
         this._settings.set_enum('doubanfm-position',position);
         this._position  = this._settings.get_enum('doubanfm-position');
+    },
+    _makeDonation : function (){
+        
+    
     }
 });
 
