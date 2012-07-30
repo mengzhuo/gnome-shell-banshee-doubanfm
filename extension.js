@@ -66,6 +66,7 @@ const DoubanFMIndicator = new Lang.Class({
     _init : function()
     {
         this.parent(St.Align.START);
+        this._playedCounter = 0;
         
         // Load default setting
         this._showText  = true;
@@ -151,7 +152,7 @@ const DoubanFMIndicator = new Lang.Class({
                         
             eoF = (i%2 == 1)?'even':'odd'; 
             hbox.add_style_class_name(eoF);
-            //FIXME It's weird that "nth-child(even)" selector won't work , Here is a workaround
+            //XXX It's weird that "nth-child(even)" selector won't work , Here is a workaround
             
             click = new St.Label({ text:textList[i][0],style_class: 'click'});
             description = new St.Label({ text:textList[i][1],style_class: 'description'});
@@ -252,7 +253,7 @@ const DoubanFMIndicator = new Lang.Class({
                 Main.panel.addToStatusArea('DoubanFMIndicator',this,-1);
             break;
             default:
-                global.logError('DoubanFM position error');
+                throw new Error('DoubanFM position error');
         }
         if (this._firstTime)
             this._introduction();
@@ -287,6 +288,12 @@ const DoubanFMIndicator = new Lang.Class({
             this._player.next();
             return true;
         }
+        
+        // 30*3min = 90min
+        // Update list in about one and half hour and 
+        // we don't need to run in Mainloop :)
+        if ( this._playedCounter%30 == 0 )
+            this._adblocker.updateList();
         
         if (this._player.loveToggled){ // workaround for Love toggled but no signal come out
             this._Loveit = this._player.loveStatus; 
@@ -389,7 +396,7 @@ const DoubanFMIndicator = new Lang.Class({
                 Main.panel.addToStatusArea('DoubanFMIndicator',this,-1);
             break;
             default:
-                global.logError('DoubanFM position error');
+                throw new Error('DoubanFM position error');
         }
         
         this._settings.disconnect( this._settingSiganlID );
