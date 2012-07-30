@@ -10,6 +10,7 @@ const DBFMUtil = Extension.imports.util;
 
 const Gettext = imports.gettext.domain('banshee-doubanfm-gse');
 const _ = Gettext.gettext;
+const DONATION_URI = "http://amzn.com/w/D4WJ5SD3PW5W";
 
 
 const DoubanFMSettingsWidget = new GObject.Class({
@@ -105,8 +106,7 @@ const DoubanFMSettingsWidget = new GObject.Class({
         this._position  = this._settings.get_enum('doubanfm-position');
     },
     _makeDonation : function (){
-        
-    
+        GLib.spawn_command_line_async('gnome-open %s'.format(DONATION_URI))
     }
 });
 
