@@ -13,6 +13,7 @@ const Gio = imports.gi.Gio;
 const Util = imports.misc.util;
 const Lang = imports.lang;
 const Soup = imports.gi.Soup;
+const NMClient = imports.gi.NMClient;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 
 
@@ -52,6 +53,8 @@ const AdBlocker = new Lang.Class({
         
         this._localFile = Gio.file_new_for_path(LOCAL_CACHE_FILE_URI);
         
+        this._networkClient =  NMClient.Client.new();
+        
         this.updateList();
     },
     updateList: function (){
@@ -60,12 +63,19 @@ const AdBlocker = new Lang.Class({
         
         let callback;
         
-        let currentTime = new Date();
-        currentTime = currentTime.getTime();
+        let currentTime = (new Date).getTime();
+        
         let fileModiTime = this._localFile.query_exists(this._cancelHandler)?this._localFile.modificationTime*1000:0;
         
+        // XXX it must be an easier way
+        let mainConnection = this._networkClient.get_active_connections() || null;
+        
+        
         if ( !(this.list instanceof Array)  || currentTime-fileModiTime > DURATION_IN_M_SEC){
-            Session.queue_message(this._msg, Lang.bind(this,this._onRequestCompleted),callback);
+
+            if (mainConnection != null){
+                Session.queue_message(this._msg, Lang.bind(this,this._onRequestCompleted),callback);
+            }
         }
         
     },
@@ -152,18 +162,6 @@ const AdBlocker = new Lang.Class({
         finally{
             this.loadLocal();
         }
-        /*
-        this._localFile.replace_contents_async(JSON.stringify(this._json,['ad-list','version']),
-                                                null, false,
-                                                Gio.FileCreateFlags.NONE, 
-                                                this._cancelHandler,
-                                                Lang.bind(this,this.loadLocalFileInfo)
-                                                );
-        this._localFile.set_attribute_string(Gio.FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
-                                        LOCAL_JSON_CONTENT_TYPE,
-                                        Gio.FileQueryInfoFlags.NONE,
-                                        this._cancelHandler);
-        */
     },
     
     _onDestroy : function (){

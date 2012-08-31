@@ -87,7 +87,6 @@ function getSettings(schema) {
 function hasCJK (string){
     if (typeof ( string ) != 'string' ){
         throw new Error (string+'is not string');
-        return false;
     }
           
     if (string.search(/[\u3000-\u9FA5]/) != -1){

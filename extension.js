@@ -289,7 +289,7 @@ const DoubanFMIndicator = new Lang.Class({
             return true;
         }
         
-        // 30*3min = 90min
+        // 30songs*3min = 90min
         // Update list in about one and half hour and 
         // we don't need to run in Mainloop :)
         if ( this._playedCounter%30 == 0 )
