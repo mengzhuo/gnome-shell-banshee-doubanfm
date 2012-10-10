@@ -102,8 +102,7 @@ const DoubanFMIndicator = new Lang.Class({
         if (!iconTheme.has_icon(ICON.NONE))
             iconTheme.append_search_path (Extension.dir.get_path()+'/icons');
         
-        this._icon = new St.Icon({ icon_type: St.IconType.SYMBOLIC,
-                                    style_class: 'popup-menu-icon',
+        this._icon = new St.Icon({  style_class: 'popup-menu-icon',
                                     icon_name: ICON.NONE,
                                     icon_size: Math.round(PANEL_HEIGHT/2)
                                     });
@@ -243,11 +242,11 @@ const DoubanFMIndicator = new Lang.Class({
         switch (this._position){
             case POSITION.LEFT :
                 Main.panel._leftBox.add_actor(this.actor);
-                Main.panel._menus.addMenu(this.menu);
+                Main.panel.menuManager.addMenu(this.menu);
             break;
             case POSITION.CENTER :
                 Main.panel._centerBox.add_actor(this.actor);
-                Main.panel._menus.addMenu(this.menu);
+                Main.panel.menuManager.addMenu(this.menu);
             break;
             case POSITION.RIGHT :
                 Main.panel.addToStatusArea('DoubanFMIndicator',this,-1);
@@ -300,6 +299,7 @@ const DoubanFMIndicator = new Lang.Class({
             this._player.loveToggled = false;
         }
         this._updateLabel();
+        return false;
     },
     _updateLabel : function (){
          if (this._player.playbackStatus != null && this._title != null){
@@ -343,13 +343,13 @@ const DoubanFMIndicator = new Lang.Class({
             this._icon.add_style_class_name('not-running');
             this._label.text = _('Not Running');
             
-            if (!this._firstTime)
-               this.actor.hide();
+            //if (!this._firstTime)
+               //this.actor.hide();
             //in case some of users don't know this extension is running
         }
     },
-    _onStateChanged : function ()
-    {
+    _onStateChanged : function (){
+    
        this._player._doubanFMServer.GetPlayingSongRemote(Lang.bind(this,this._onGetSongInfoCompleted));
     },
     _onButtonPress: function(actor, event) {
@@ -386,11 +386,11 @@ const DoubanFMIndicator = new Lang.Class({
         switch (this._position){
             case POSITION.LEFT :
                 Main.panel._leftBox.remove_actor(this.actor);
-                Main.panel._menus.removeMenu(this.menu);
+                Main.panel.menuManager.removeMenu(this.menu);
             break;
             case POSITION.CENTER :
                 Main.panel._centerBox.remove_actor(this.actor);
-                Main.panel._menus.removeMenu(this.menu);
+                Main.panel.menuManager.removeMenu(this.menu);
             break;
             case POSITION.RIGHT :
                 Main.panel.addToStatusArea('DoubanFMIndicator',this,-1);
@@ -409,6 +409,7 @@ let indicator;
 function enable() {
     if (!indicator) {
         indicator = new DoubanFMIndicator();
+        global._dbindicator = indicator;
         indicator.addToPanel();
     }
 }
