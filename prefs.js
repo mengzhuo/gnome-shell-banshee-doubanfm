@@ -28,7 +28,6 @@ const DoubanFMSettingsWidget = new GObject.Class({
         this._charLimit = this._settings.get_int('char-limit');
         
         this._position  = this._settings.get_enum('doubanfm-position');
-        this._firstTime = this._settings.get_boolean('first-time');
         
         this.attach(new Gtk.Label({ label: "", wrap: true, xalign: 0.0 }), 0, 0, 1, 1);
         this.attach(new Gtk.Label({ label: _("Show Song Title"), wrap: true, xalign: 0.0 }), 1, 0, 1, 1);
@@ -71,12 +70,6 @@ const DoubanFMSettingsWidget = new GObject.Class({
         this.attach(new Gtk.Label({ label: "*", wrap: true, xalign: 0.0 }), 0, 2, 1, 1);
         this._positionComboBox.connect('changed', Lang.bind(this, this._setPosition));
         
-        this.attach(new Gtk.Label({ label: "*", wrap: true, xalign: 0.0 }), 0, 3, 1, 1);
-        this.attach(new Gtk.Label({ label: _("Display Help"), wrap: true, xalign: 0.0 }), 1, 3, 1, 1);
-        this._firstTimeSwitch = new Gtk.Switch({active: this._firstTime});
-        this.attach(this._firstTimeSwitch,2,3,1,1);
-        this._showTextSwitch.connect('notify::active', Lang.bind(this, this._setFirstTime));
-        
         let horzSeparator = new Gtk.HSeparator();
         this.attach(horzSeparator, 0, 5, 3, 1);
         
@@ -88,9 +81,6 @@ const DoubanFMSettingsWidget = new GObject.Class({
     _setShowText: function (object){
         this._charLimitSpinButton.editable = this._showText = object.active;
         this._settings.set_boolean('show-text',object.active);
-    },
-    _setFirstTime : function (object){
-        this._settings.set_boolean('first-time',object.active);
     },
     _setCharLimit : function (object){
         //print(object.value);

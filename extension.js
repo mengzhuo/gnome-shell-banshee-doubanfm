@@ -70,7 +70,6 @@ const DoubanFMIndicator = new Lang.Class({
         
         // Load default setting
         this._showText  = true;
-        this._firstTime = true;
         this._charLimit = 5;
         this._position   = POSITION.CENTER;
         
@@ -126,105 +125,6 @@ const DoubanFMIndicator = new Lang.Class({
     _onDBFMDestroy : function (){
         this.actor.hide();
     },
-    _introduction  : function (){
-    
-        //introduction title 
-        let item = new PopupMenu.PopupMenuItem(_("How to use Douban FM"), { reactive: false });
-        this.menu.addMenuItem(item);
-        
-        this.menu.actor.add_style_class_name("doubanfm-popup");
-        
-        vbox = new St.BoxLayout({vertical:true,
-                                 style_class: 'doubanfm-vbox'});
-        
-        item = new St.Label({ text:_("Three ways to control by click\nthe label above after you've\ndone the preference setting"),
-                               style_class: 'title'});
-        vbox.add_actor(item);
-        
-        textList = [ [_( "Left Click"),_("Next Song")],
-                     [_( "Middle Click"),_("Dislike")],
-                     [_( "Right Click"),_("Love Toggle")]
-                   ];
-        
-        for (var i  in textList){
-            hbox = new St.BoxLayout({vertical:false,style_class: 'hbox-item'});
-                        
-            eoF = (i%2 == 1)?'even':'odd'; 
-            hbox.add_style_class_name(eoF);
-            //XXX It's weird that "nth-child(even)" selector won't work , Here is a workaround
-            
-            click = new St.Label({ text:textList[i][0],style_class: 'click'});
-            description = new St.Label({ text:textList[i][1],style_class: 'description'});
-            hbox.add_actor(click);
-            hbox.add_actor(description);
-            vbox.add_actor(hbox);
-        }
-        
-        this._introducator =  new PopupMenu.PopupBaseMenuItem({ reactive: false });
-        this._introducator.addActor(vbox);
-        this._introducator.addActor(new St.Bin({ style_class: "intro-img" }), {align: St.Align.END});
-        
-        this.menu.addMenuItem(this._introducator);
-        
-        item = new PopupMenu.PopupSeparatorMenuItem();
-        this.menu.addMenuItem(item);
-        
-        this._showTextSwitch = new PopupMenu.PopupSwitchMenuItem(_("Show Song Title"),this._showText);
-        this._showTextSwitch.connect('toggled', Lang.bind(this, function(item) {
-            this._settings.set_boolean('show-text', item.state);
-        }));
-        this.menu.addMenuItem(this._showTextSwitch);
-        
-        //char limit
-        this._charLimitTitle = new PopupMenu.PopupMenuItem(_("Character Number Limit"), { reactive: false });
-        this._charLimitLabel = new St.Label({ text: this._charLimit+_(" CJK/ ")+this._charLimit*2+_(" Latins") });
-        this._charLimitSlider = new PopupMenu.PopupSliderMenuItem(_charLimitsToValue(this._charLimit));
-        this._charLimitSlider.connect('value-changed', Lang.bind(this, function(item) {
-            this._charLimitLabel.set_text(_valueToCharLimits(item.value)+_(" CJK/ ")+ _valueToCharLimits(item.value)*2+' Latins');
-        }));
-        
-        this._charLimitSlider.connect('drag-end', Lang.bind(this, this._onCharLimitChanged));
-        this._charLimitSlider.actor.connect('scroll-event', Lang.bind(this, this._onCharLimitChanged));
-        this._charLimitTitle.addActor(this._charLimitLabel, { align: St.Align.END });
-        this.menu.addMenuItem(this._charLimitTitle);
-        this.menu.addMenuItem(this._charLimitSlider);
-        
-        
-        //position
-        this._positionTitle = new PopupMenu.PopupMenuItem(_("Position in the Panel"), { reactive: false });
-        this._restartHint = new St.Label({text: _("Need to restart Extension") });
-        this._positionTitle.addActor(this._restartHint,{align:St.Align.END});
-        this._restartHint.hide();
-        
-        this._positionContainer = new PopupMenu.PopupBaseMenuItem({ reactive: true });
-        Hbox = new St.BoxLayout({vertical:false,name:'position-list'})
-        _positionList = [ _("Left"), _("Center"), _("Right")];
-        
-        for (var i = 0 ; i<3 ; i++){
-            button = new St.Button({label:_positionList[i],style_class:'position-list-item'});
-            button.position = i;
-            if ( i == this._position){
-                this._currentPositionButton = button;
-                this._currentPositionButton.label = _("[ %s ]").format(button.label);
-                this._currentPositionButton.reactive = false;
-            }
-            button.connect('button-press-event', Lang.bind(this, this._onPositionChanged));
-            Hbox.add_actor(button,{x_fill: false});
-        }
-        this._positionContainer.addActor(Hbox,{ align: St.Align.MIDDLE });//Weird, this align won't work 
-        this.menu.addMenuItem( this._positionTitle );
-        this.menu.addMenuItem( this._positionContainer );
-        
-        
-        item = new PopupMenu.PopupSeparatorMenuItem();
-        this.menu.addMenuItem(item);
-        
-        //Done setting
-        this._nextTimeSwitch = new PopupMenu.PopupMenuItem(_("I've done preference setting"),{reactive:true});
-        this._nextTimeSwitch.connect('activate', Lang.bind(this, this._onToggled));
-        this.menu.addMenuItem(this._nextTimeSwitch);
-        
-    },
     _onPositionChanged : function (newButton){
             this._restartHint.show();
             this._currentPositionButton.label.replace(/\[\s(.*)\s\]/,'$1');
@@ -252,20 +152,11 @@ const DoubanFMIndicator = new Lang.Class({
             default:
                 throw new Error('DoubanFM position error');
         }
-        if (this._firstTime)
-            this._introduction();
-    },
-    _onToggled : function (){
-        
-        this._settings.set_boolean('first-time',false);
-        this.menu.close();
-        this.menu = null;
     },
     _onSettingsChanged : function (){
         
         this._showText  = this._settings.get_boolean('show-text');
         this._charLimit = this._settings.get_int('char-limit');
-        this._firstTime = this._settings.get_boolean('first-time');
         this._position   = this._settings.get_enum('doubanfm-position');
         
                     
@@ -341,8 +232,7 @@ const DoubanFMIndicator = new Lang.Class({
             this._icon.add_style_class_name('not-running');
             this._label.text = _('Not Running');
             
-            if (!this._firstTime)
-               this.actor.hide();
+            this.actor.hide();
             //in case some of users don't know this extension is running
         }
     },
@@ -352,37 +242,29 @@ const DoubanFMIndicator = new Lang.Class({
     },
     _onButtonPress: function(actor, event) {
         
-        if (!this._firstTime){
+        let button = event.get_button();
         
-            let button = event.get_button();
-            
-            // Here is a workaround as I don't know the namespace of middle button in Clutter
-            if ( button == 1 ){ //left
-                 this._player.next();
+        // Here is a workaround as I don't know the namespace of middle button in Clutter
+        if ( button == 1 ){ //left
+             this._player.next();
+        }
+        if ( button == 2 ){ //middle
+            this._player.hate();
+        }
+        if (button == 3){ //right
+            if (this._Loveit){
+                this._player.cancel_love();
             }
-            if ( button == 2 ){ //middle
-                this._player.hate();
-            }
-            if (button == 3){ //right
-                if (this._Loveit){
-                    this._player.cancel_love();
-                }
-                else{
-                    this._player.love();
-                }
+            else{
+                this._player.love();
             }
         }
-        else{
-            this.menu.toggle();
-        }
-        return true;
     },
     _onDestroy: function() {
     
         this._player._onDestroy();
-        Main.panel.menuManager.removeMenu(this.menu);
         Main.panel.statusArea.DoubanFMIndicator.actor.hide()
-        delete Main.panel.statusArea.DoubanFMIndicator //FIXME: wired behavior of statusArea 
+        delete Main.panel.statusArea.DoubanFMIndicator //FIXME: wired statusArea, no remove action
         this._settings.disconnect( this._settingSiganlID );
     }
     
