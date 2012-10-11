@@ -241,15 +241,13 @@ const DoubanFMIndicator = new Lang.Class({
     addToPanel : function (){
         switch (this._position){
             case POSITION.LEFT :
-                Main.panel._leftBox.add_actor(this.actor);
-                Main.panel.menuManager.addMenu(this.menu);
+                Main.panel.addToStatusArea(this.__name__, this, 99, 'left');
             break;
             case POSITION.CENTER :
-                Main.panel._centerBox.add_actor(this.actor);
-                Main.panel.menuManager.addMenu(this.menu);
+                Main.panel.addToStatusArea(this.__name__, this, 99, 'center');
             break;
             case POSITION.RIGHT :
-                Main.panel.addToStatusArea('DoubanFMIndicator',this,-1);
+                Main.panel.addToStatusArea(this.__name__, this, -1, 'right');
             break;
             default:
                 throw new Error('DoubanFM position error');
@@ -299,7 +297,7 @@ const DoubanFMIndicator = new Lang.Class({
             this._player.loveToggled = false;
         }
         this._updateLabel();
-        return false;
+        return true;
     },
     _updateLabel : function (){
          if (this._player.playbackStatus != null && this._title != null){
@@ -343,8 +341,8 @@ const DoubanFMIndicator = new Lang.Class({
             this._icon.add_style_class_name('not-running');
             this._label.text = _('Not Running');
             
-            //if (!this._firstTime)
-               //this.actor.hide();
+            if (!this._firstTime)
+               this.actor.hide();
             //in case some of users don't know this extension is running
         }
     },
@@ -381,43 +379,25 @@ const DoubanFMIndicator = new Lang.Class({
     },
     _onDestroy: function() {
     
-        this._player.destroy();
-        
-        switch (this._position){
-            case POSITION.LEFT :
-                Main.panel._leftBox.remove_actor(this.actor);
-                Main.panel.menuManager.removeMenu(this.menu);
-            break;
-            case POSITION.CENTER :
-                Main.panel._centerBox.remove_actor(this.actor);
-                Main.panel.menuManager.removeMenu(this.menu);
-            break;
-            case POSITION.RIGHT :
-                Main.panel.addToStatusArea('DoubanFMIndicator',this,-1);
-            break;
-            default:
-                throw new Error('DoubanFM position error');
-        }
-        
+        this._player._onDestroy();
+        Main.panel.menuManager.removeMenu(this.menu);
+        Main.panel.statusArea.DoubanFMIndicator.actor.hide()
+        delete Main.panel.statusArea.DoubanFMIndicator //FIXME: wired behavior of statusArea 
         this._settings.disconnect( this._settingSiganlID );
     }
     
 });
 
-let indicator;
-
 function enable() {
-    if (!indicator) {
+    if (!Main.panel.statusArea.DoubanFMIndicator) {
         indicator = new DoubanFMIndicator();
-        global._dbindicator = indicator;
         indicator.addToPanel();
     }
 }
 
 function disable() {
-    if (indicator) {
-        indicator.destroy();
-        indicator = null;
+    if (Main.panel.statusArea.DoubanFMIndicator) {
+        Main.panel.statusArea.DoubanFMIndicator._onDestroy();
     }
 }
 function init(metadata) {
