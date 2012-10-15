@@ -271,14 +271,14 @@ const DoubanFMIndicator = new Lang.Class({
 });
 
 function enable() {
-    if (!Main.panel.statusArea.DoubanFMIndicator) {
-        indicator = new DoubanFMIndicator();
+    if (typeof Main.panel.statusArea.DoubanFMIndicator == 'undefined') {
+        let indicator = new DoubanFMIndicator();
         indicator.addToPanel();
     }
 }
 
 function disable() {
-    if (Main.panel.statusArea.DoubanFMIndicator) {
+    if (typeof Main.panel.statusArea.DoubanFMIndicator != 'undefined') {
         Main.panel.statusArea.DoubanFMIndicator._onDestroy();
     }
 }
