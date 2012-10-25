@@ -94,6 +94,11 @@ const DoubanFMIndicator = new Lang.Class({
                                         style_class: "doubanFM"
                                      });
         this.actor.add_actor(this._box);
+
+        //blur effect
+        this._blur_effect = new Clutter.BlurEffect();
+        this._blur_effect.enabled = false;
+        
         
         //icon stuff
         let iconTheme = Gtk.IconTheme.get_default();
@@ -106,6 +111,7 @@ const DoubanFMIndicator = new Lang.Class({
                                     icon_size: Math.round(PANEL_HEIGHT/2)
                                     });
         
+        this._icon.add_effect(this._blur_effect);
         this._box.add_actor(this._icon);
         
         //label
@@ -114,6 +120,8 @@ const DoubanFMIndicator = new Lang.Class({
                                      });
         
         this._box.add_actor(this._label);
+        
+
         
         //UI END
         
@@ -125,29 +133,19 @@ const DoubanFMIndicator = new Lang.Class({
     _onDBFMDestroy : function (){
         this.actor.hide();
     },
-    _onPositionChanged : function (newButton){
-            this._restartHint.show();
-            this._currentPositionButton.label.replace(/\[\s(.*)\s\]/,'$1');
-            this._currentPositionButton.reactive = true;
-            
-            newButton.label = _("[ %s ]").format(newButton.label)
-            newButton.reactive = false;
-            this._currentPositionButton = newButton;
-            this._settings.set_enum('doubanfm-position',newButton.position);
-    },
     _onCharLimitChanged : function (){
         this._settings.set_int('char-limit', _valueToCharLimits(this._charLimitSlider.value));
     },
     addToPanel : function (){
         switch (this._position){
             case POSITION.LEFT :
-                Main.panel.addToStatusArea(this.__name__, this, 99, 'left');
+                Main.panel.addToStatusArea(this.__name__, this, 10, 'left');
             break;
             case POSITION.CENTER :
-                Main.panel.addToStatusArea(this.__name__, this, 99, 'center');
+                Main.panel.addToStatusArea(this.__name__, this, 10, 'center');
             break;
             case POSITION.RIGHT :
-                Main.panel.addToStatusArea(this.__name__, this, -1, 'right');
+                Main.panel.addToStatusArea(this.__name__, this, 0, 'right');
             break;
             default:
                 throw new Error('DoubanFM position error');
@@ -167,6 +165,7 @@ const DoubanFMIndicator = new Lang.Class({
         this._onStateChanged(); // to change UI
     },
     _onGetSongInfoCompleted : function (results){
+        this._blur_effect.enabled = false
         if (results  == null)
             return;
         
@@ -242,8 +241,10 @@ const DoubanFMIndicator = new Lang.Class({
     },
     _onButtonPress: function(actor, event) {
         
+        //Tell user that his action is in progress
+        this._blur_effect.enabled = true;
+
         let button = event.get_button();
-        
         // Here is a workaround as I don't know the namespace of middle button in Clutter
         if ( button == 1 ){ //left
              this._player.next();
@@ -263,17 +264,16 @@ const DoubanFMIndicator = new Lang.Class({
     _onDestroy: function() {
     
         this._player._onDestroy();
-        Main.panel.statusArea.DoubanFMIndicator.actor.hide()
-        delete Main.panel.statusArea.DoubanFMIndicator //FIXME: wired statusArea, no remove action
+        Main.panel.statusArea.DoubanFMIndicator.actor.destroy()
         this._settings.disconnect( this._settingSiganlID );
+        delete Main.panel.statusArea.DoubanFMIndicator
     }
     
 });
 
 function enable() {
     if (typeof Main.panel.statusArea.DoubanFMIndicator == 'undefined') {
-        let indicator = new DoubanFMIndicator();
-        indicator.addToPanel();
+        (new DoubanFMIndicator).addToPanel();
     }
 }
 
