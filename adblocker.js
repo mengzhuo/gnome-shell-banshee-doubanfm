@@ -111,7 +111,7 @@ const AdBlocker = new Lang.Class({
                 }
                 
             }catch(e){
-                throw new Error('[AdBlocker][Error]:%s'.format(e.message));
+                global.log('[AdBlocker][Error]:%s'.format(e.message));
             }
         }
         else{

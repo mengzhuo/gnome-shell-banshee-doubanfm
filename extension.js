@@ -98,6 +98,7 @@ const DoubanFMIndicator = new Lang.Class({
         //blur effect
         this._blur_effect = new Clutter.BlurEffect();
         this._blur_effect.enabled = false;
+        this.actor.add_effect(this._blur_effect);
         
         
         //icon stuff
@@ -111,7 +112,6 @@ const DoubanFMIndicator = new Lang.Class({
                                     icon_size: Math.round(PANEL_HEIGHT/2)
                                     });
         
-        this._icon.add_effect(this._blur_effect);
         this._box.add_actor(this._icon);
         
         //label
