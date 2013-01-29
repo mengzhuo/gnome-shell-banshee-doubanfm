@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: banshee-doubanfm-gse\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-21 23:20+0800\n"
-"PO-Revision-Date: 2012-07-21 23:20+0800\n"
+"POT-Creation-Date: 2013-01-22 00:16+0800\n"
+"PO-Revision-Date: 2013-01-22 00:17+0800\n"
 "Last-Translator: Meng Zhuo <mengzhuo1203@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -16,99 +16,75 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: prefs.js:31
-#: extension.js:168
+#: prefs.js:33
 msgid "Show Song Title"
 msgstr "显示歌曲标题"
 
-#: prefs.js:36
-#: extension.js:175
+#: prefs.js:38
 msgid "Character Number Limit"
 msgstr "字符限制"
 
-#: prefs.js:51
-#: extension.js:190
+#: prefs.js:53
 msgid "Position in the Panel"
 msgstr "标签在面板中的位置"
 
-#: prefs.js:52
-#: extension.js:197
+#: prefs.js:54
 msgid "Left"
 msgstr "左边"
 
-#: prefs.js:52
-#: extension.js:197
+#: prefs.js:54
 msgid "Center"
 msgstr "中间"
 
-#: prefs.js:52
-#: extension.js:197
+#: prefs.js:54
 msgid "Right"
 msgstr "右边"
 
-#: prefs.js:72
-msgid "Display Help"
-msgstr "显示帮助"
-
-#: prefs.js:80
-#: extension.js:191
+#: prefs.js:76
 msgid "Need to restart Extension"
 msgstr "需要重启插件"
 
-#: extension.js:128
-msgid "How to use Douban FM"
-msgstr "如何使用Douban FM插件"
+#~ msgid "Display Help"
+#~ msgstr "显示帮助"
 
-#: extension.js:136
-msgid ""
-"Three ways to control by click\n"
-"the label above after you've\n"
-"done the preference setting"
-msgstr ""
-"设置完成后\n"
-"你可以通过点击上方的标签来\n"
-"进行控制"
+#~ msgid "How to use Douban FM"
+#~ msgstr "如何使用Douban FM插件"
 
-#: extension.js:140
-msgid "Left Click"
-msgstr "左键点击"
+#~ msgid ""
+#~ "Three ways to control by click\n"
+#~ "the label above after you've\n"
+#~ "done the preference setting"
+#~ msgstr ""
+#~ "设置完成后\n"
+#~ "你可以通过点击上方的标签来\n"
+#~ "进行控制"
 
-#: extension.js:140
-msgid "Next Song"
-msgstr "下一首"
+#~ msgid "Left Click"
+#~ msgstr "左键点击"
 
-#: extension.js:141
-msgid "Middle Click"
-msgstr "中键点击"
+#~ msgid "Next Song"
+#~ msgstr "下一首"
 
-#: extension.js:141
-msgid "Dislike"
-msgstr "不再收听"
+#~ msgid "Middle Click"
+#~ msgstr "中键点击"
 
-#: extension.js:142
-msgid "Right Click"
-msgstr "右键点击"
+#~ msgid "Dislike"
+#~ msgstr "不再收听"
 
-#: extension.js:142
-msgid "Love Toggle"
-msgstr "置为/取消最爱"
+#~ msgid "Right Click"
+#~ msgstr "右键点击"
 
-#: extension.js:176
-#: extension.js:179
-msgid " CJK/ "
-msgstr " CJK/ "
+#~ msgid "Love Toggle"
+#~ msgstr "置为/取消最爱"
 
-#: extension.js:176
-msgid " Latins"
-msgstr "拉丁字符"
+#~ msgid " CJK/ "
+#~ msgstr " CJK/ "
 
-#: extension.js:204
-#: extension.js:229
-#, c-format
-msgid "[ %s ]"
-msgstr "[ %s ]"
+#~ msgid " Latins"
+#~ msgstr "拉丁字符"
 
-#: extension.js:219
-msgid "I've done preference setting"
-msgstr "我已完成设定"
+#~ msgid "[ %s ]"
+#~ msgstr "[ %s ]"
 
+#~ msgid "I've done preference setting"
+#~ msgstr "我已完成设定"

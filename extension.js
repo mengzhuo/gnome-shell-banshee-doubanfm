@@ -100,18 +100,18 @@ const DoubanFMIndicator = new Lang.Class({
         this._blur_effect.enabled = false;
         this.actor.add_effect(this._blur_effect);
         
+        // expand effect
+        this.actor.connect('notify::hover', Lang.bind(this, this._onHover));
         
         //icon stuff
         let iconTheme = Gtk.IconTheme.get_default();
         
         if (!iconTheme.has_icon(ICON.NONE))
             iconTheme.append_search_path (Extension.dir.get_path()+'/icons');
-        
         this._icon = new St.Icon({  style_class: 'popup-menu-icon',
                                     icon_name: ICON.NONE,
                                     icon_size: Math.round(PANEL_HEIGHT/2)
                                     });
-        
         this._box.add_actor(this._icon);
         
         //label
@@ -120,9 +120,6 @@ const DoubanFMIndicator = new Lang.Class({
                                      });
         
         this._box.add_actor(this._label);
-        
-
-        
         //UI END
         
         this.connect('destroy', Lang.bind(this, this._onDestroy));
@@ -267,6 +264,11 @@ const DoubanFMIndicator = new Lang.Class({
         Main.panel.statusArea.DoubanFMIndicator.actor.destroy()
         this._settings.disconnect( this._settingSiganlID );
         delete Main.panel.statusArea.DoubanFMIndicator
+    },
+    
+    _onHover : function(){
+        this._label.text = this._title;
+        global.log(this._title);
     }
     
 });
