@@ -1,4 +1,4 @@
-{"shell-version": ["3.6"],
+{"shell-version": ["3.6","3.8"],
  "uuid": "banshee-gnome-shell-doubanFM-indicator@mengzhuo.org",
  "name": "Douban FM",
  "url":  "https://github.com/mengzhuo/gnome-shell-banshee-doubanfm",
