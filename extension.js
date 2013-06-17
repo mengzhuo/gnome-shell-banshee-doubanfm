@@ -139,7 +139,7 @@ const DoubanFMIndicator = new Lang.Class({
                 Main.panel.addToStatusArea(this.__name__, this, 10, 'left');
             break;
             case POSITION.CENTER :
-                Main.panel.addToStatusArea(this.__name__, this, 10, 'center');
+                Main.panel.addToStatusArea(this.__name__, this, 999, 'center');
             break;
             case POSITION.RIGHT :
                 Main.panel.addToStatusArea(this.__name__, this, 0, 'right');
