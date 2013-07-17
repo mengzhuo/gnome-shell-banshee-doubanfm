@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubanFM-gnome\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-18 23:25+0800\n"
-"PO-Revision-Date: 2013-07-16 16:30+0100\n"
-"Last-Translator: Jonatan Zeidler <jonatan_zeidler@hotmail.de>\n"
+"POT-Creation-Date: 2013-07-17 09:05+0800\n"
+"PO-Revision-Date: 2013-07-17 09:13+0800\n"
+"Last-Translator: Meng Zhuo <mengzhuo1203@gmail.com>\n"
 "Language-Team: German <jonatan_zeidler@gmx.de>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -16,80 +16,69 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: extension.js:125
-msgid "How to use Douban FM"
-msgstr "Wie man Douban FM nutzt"
-
-#: extension.js:133
-msgid ""
-"Three ways to control by click\n"
-"the label above after you've\n"
-"done the preference setting"
-msgstr ""
-"Drei Möglichkeiten, die Schaltfläche\n"
-"oben zu benutzen, nachdem die\n"
-"Voreinstellungen gesetzt sind."
-
-#: extension.js:137
-msgid "Left Click"
-msgstr "Linksklick"
-
-#: extension.js:137
-msgid "Next Song"
-msgstr "Nächstes Lied"
-
-#: extension.js:138
-msgid "Middle Click"
-msgstr "Mittelklick"
-
-#: extension.js:138
-msgid "Dislike"
-msgstr "Gefällt mir nicht"
-
-#: extension.js:139
-msgid "Right Click"
-msgstr "Rechtsklick"
-
-#: extension.js:139
-msgid "Love Toggle"
-msgstr "Gefällt mir"
-
-#: extension.js:165
+#: prefs.js:33
 msgid "Show Song Title"
 msgstr "Liedtitel anzeigen"
 
-#: extension.js:172
+#: prefs.js:38
 msgid "Character Number Limit"
 msgstr "Maximal angezeigte Zeichen"
 
-#: extension.js:173 extension.js:176
-msgid " CJK/ "
-msgstr " CJK/ "
-
-#: extension.js:173
-msgid " Latins"
-msgstr "Buchstaben"
-
-#: extension.js:187
+#: prefs.js:53
 msgid "Position in the Panel"
 msgstr "Position im Panel"
 
-#: extension.js:188
-msgid "Need to restart Extension"
-msgstr "Neustart der GNOME-Oberfläche nötig"
-
-#: extension.js:194
+#: prefs.js:54
 msgid "Left"
 msgstr "Links"
 
-#: extension.js:194
+#: prefs.js:54
 msgid "Center"
 msgstr "Mitte"
 
-#: extension.js:194
+#: prefs.js:54
 msgid "Right"
 msgstr "Rechts"
 
-#: extension.js:216
-msgid "I've done preference setting"
-msgstr "Ich habe die Voreinstellungen gesetzt"
+#: prefs.js:76
+msgid "Need to restart Extension"
+msgstr "Neustart der GNOME-Oberfläche nötig"
+
+#~ msgid " CJK/ "
+#~ msgstr " CJK/ "
+
+#~ msgid "How to use Douban FM"
+#~ msgstr "Wie man Douban FM nutzt"
+
+#~ msgid ""
+#~ "Three ways to control by click\n"
+#~ "the label above after you've\n"
+#~ "done the preference setting"
+#~ msgstr ""
+#~ "Drei Möglichkeiten, die Schaltfläche\n"
+#~ "oben zu benutzen, nachdem die\n"
+#~ "Voreinstellungen gesetzt sind."
+
+#~ msgid "Left Click"
+#~ msgstr "Linksklick"
+
+#~ msgid "Next Song"
+#~ msgstr "Nächstes Lied"
+
+#~ msgid "Middle Click"
+#~ msgstr "Mittelklick"
+
+#~ msgid "Dislike"
+#~ msgstr "Gefällt mir nicht"
+
+#~ msgid "Right Click"
+#~ msgstr "Rechtsklick"
+
+#~ msgid "Love Toggle"
+#~ msgstr "Gefällt mir"
+
+#~ msgid " Latins"
+#~ msgstr "Buchstaben"
+
+#~ msgid "I've done preference setting"
+#~ msgstr "Ich habe die Voreinstellungen gesetzt"
