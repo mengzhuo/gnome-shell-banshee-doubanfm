@@ -101,7 +101,7 @@ const DoubanFMIndicator = new Lang.Class({
         this.actor.add_effect(this._blur_effect);
         
         // expand effect
-        this.actor.connect('notify::hover', Lang.bind(this, this._onHover));
+        //this.actor.connect('notify::hover', Lang.bind(this, this._onHover));
         
         //icon stuff
         let iconTheme = Gtk.IconTheme.get_default();
@@ -116,7 +116,7 @@ const DoubanFMIndicator = new Lang.Class({
         
         //label
         this._label = new St.Label({ text:'Initializing...',
-                                      style_class: 'doubanFM-label'
+                                      style_class: 'doubanFM-label',
                                      });
         
         this._box.add_actor(this._label);
@@ -213,7 +213,7 @@ const DoubanFMIndicator = new Lang.Class({
                     this._label.text = this._title;
                 break;
                 default:
-                    this._label.text = _('...');
+                    this._blur_effect.enable = true;
             }
             
             var charLimit =  DBFMUtil.hasCJK(this._title)?this._charLimit:this._charLimit*2;
@@ -265,12 +265,6 @@ const DoubanFMIndicator = new Lang.Class({
         this._settings.disconnect( this._settingSiganlID );
         delete Main.panel.statusArea.DoubanFMIndicator
     },
-    
-    _onHover : function(){
-        this._label.text = this._title;
-        global.log(this._title);
-    }
-    
 });
 
 function enable() {

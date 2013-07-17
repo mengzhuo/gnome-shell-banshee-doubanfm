@@ -1,43 +1,13 @@
  .doubanFM-label{
     padding-left:0.5em;
  }
+ .doubanFM-label:visit{
+    color:#287DB8;
+    transition: color 0.5s linear;
+ }
  .loveit{
     color:#ff0000; /* the color of gnome-shell will override the color in svg , here is an workaround*/
  }
  .not-running{
     color:#fce94f;
  }
-.intro-img{
-    background-image: url(intro/help.svg);
-    background-size: contain;
-    width:140px;
-	height:174px;
-}
-.doubanfm-vbox .title{
-    padding-bottom:1em;
-}
-.hbox-item{
-    padding:0.25em 1em;
-    font-size:1em;
-    font-weight:800;
-}
-.hbox-item .click {
-    min-width:10em;
-    color:#ddd;
-}
-.hbox-item .description {
-    padding-left:0.5em;
-    border-left:1px solid #ccc;
-}
-.even,.hbox-item:nth-child(even){
-    background-color:#333;
-}
-.position-list-item{
-    padding:0.3em 1em;
-    min-height: 30px;
-    min-width: 30px;
-}
-.position-list-item:hover{
-    background:url(icons/doubanFM-love-symbolic.svg);
-    background-position: 0 0.8em;
-}
