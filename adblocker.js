@@ -7,13 +7,16 @@
 // Example structure of the JSON acknowledge:
 //{"ad-list":['song title of ad'],"version":YYYYMMDD}
 
+/* Ugly. This is here so that we don't crash old libnm-glib based shells unnecessarily
+ * by loading the new libnm.so. Should go away eventually */
+const libnm_glib = imports.gi.GIRepository.Repository.get_default().is_registered("NMClient", "1.0");
 
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const Util = imports.misc.util;
 const Lang = imports.lang;
 const Soup = imports.gi.Soup;
-const NMClient = imports.gi.NMClient;
+const NM = libnm_glib ? imports.gi.NMClient : imports.gi.NM;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 
 
@@ -53,7 +56,7 @@ const AdBlocker = new Lang.Class({
         
         this._localFile = Gio.file_new_for_path(LOCAL_CACHE_FILE_URI);
         
-        this._networkClient =  NMClient.Client.new();
+        this._networkClient =  NM.Client.new();
         
         this.updateList();
     },
